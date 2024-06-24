@@ -1,4 +1,4 @@
-from main import login 
+from main import login
 from werkzeug.security import generate_password_hash, check_password_hash
 from typing import Optional
 import sqlalchemy as sa
@@ -21,7 +21,7 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-    
+ 
     '''Summary
 
     self.password_hash: Refers to an attribute of the specific instance of the class, meaning each instance (or user) can have a unique password hash.
@@ -37,15 +37,21 @@ class Category(db.Model):
     category_name: so.Mapped[str] = so.mapped_column(sa.String(20))
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
     user: so.Mapped[User] = so.relationship(back_populates='categories')
+    links: so.WriteOnlyMapped['Link'] = so.relationship(back_populates='category')
 
-    def __repr__(self) -> str:
-        return '<Post {}>'.format(self.category_name)
+    def __repr__(self):
+        return '<Category {}>'.format(self.category_name)
 
 class Link(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    link: so.Mapped[str] = so.mapped_column(sa.String(254))
+    link: so.Mapped[str] = so.mapped_column(sa.String(256))
+    category_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Category.id), index=True)
+    category: so.Mapped['Category'] = so.relationship('Category', back_populates='links')
 
+    def __repr__(self):
+        return '<Link {}>'.format(self.link) 
+    
 
-@login.user_loader(id)
+@login.user_loader
 def load_user(id):
     return db.session.get(User, int(id))
