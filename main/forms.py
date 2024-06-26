@@ -34,3 +34,7 @@ class RegistrationForm(FlaskForm):
 class CategoryForm(FlaskForm):
     category_name = StringField('Category', validators=[DataRequired()])
     submit = SubmitField('Next')
+
+class LinkForm(FlaskForm):
+    link = StringField('Link')
+    submit = SubmitField('Enter')

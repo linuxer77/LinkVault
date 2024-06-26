@@ -1,11 +1,11 @@
 from flask import render_template, flash, redirect, url_for, request
 from urllib.parse import urlsplit
 from main import app, db
-from main.forms import LoginForm, RegistrationForm, CategoryForm
-from flask_login import current_user, login_user, logout_user
+from main.forms import LoginForm, RegistrationForm, CategoryForm, LinkForm
+from flask_login import current_user, login_user, logout_user, login_required
 import sqlalchemy as sa
 from main import db
-from main.models import User, Category
+from main.models import User, Category, Link
 
 @app.route('/')
 @app.route('/index')
@@ -15,7 +15,7 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('create_category'))
+        return redirect(url_for('home'))
     form = LoginForm()
     if form.validate_on_submit():
         user = db.session.scalar(
@@ -39,7 +39,7 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
@@ -66,7 +66,7 @@ def register():
 @app.route('/create_category', methods=['GET', 'POST'])
 def create_category():
     if not current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('login'))
     form = CategoryForm()
     if form.validate_on_submit():
         category_name = form.category_name.data
@@ -74,6 +74,22 @@ def create_category():
         db.session.add(category)
         db.session.commit()
         flash('Category created successfully!')
-        return redirect(url_for('index.html'))
+        return redirect(url_for('home', username=current_user.username))
     return render_template('create_category.html', title='Create Category', form=form)
-#  @app.route('/home')
+
+@app.route('/<username>/home')
+@login_required
+def home(username):
+    form = LinkForm()
+    form_category = CategoryForm()
+    category_id = form_category.id.data
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    if form.validate_on_submit():
+        url = form.link.data
+        link = Link(link=url, category=category_id)
+        db.session.add(link)
+        db.session.commit()
+        flash('The link has been added')
+        
+    return render_template('home.html')

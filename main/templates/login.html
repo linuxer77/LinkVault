@@ -40,7 +40,7 @@
             }
     
             .btn-signin:hover {
-                background-color: #0056b3;
+                background-color: #e2bb0a;
                 color: white;
             }
         </style>
@@ -73,7 +73,7 @@ Bootstrap 5 Form Pack Template
                             </a>
 
                             <div>
-                                <a href="https://github.com/linuxer77/LinkVault" class="custom-btn custom-border-btn btn">Source Code
+                                <a href="https://github.com/linuxer77/LinkVault" class="custom-btn custom-border-btn btn" target="_blank">Source Code
                                     <i class="bi-arrow-right ms-2"></i>
                                 </a>
                             </div>
@@ -102,6 +102,12 @@ Bootstrap 5 Form Pack Template
                             <li>
                                 <a href="{{ url_for('register') }}">Create an account</a>
                             </li>
+
+                            <li>
+                                <a href="{{ url_for('logout') }}">Logout</a>
+                            </li>
+                            
+
                     </nav>
                 </div>
             </div>
@@ -113,7 +119,7 @@ Bootstrap 5 Form Pack Template
                         <div class="col-lg-5 col-12 mx-auto">
                             <form class="custom-form login-form" role="form" method="post">
                                 {{ form.hidden_tag() }}
-                                <h2 class="hero-title text-center mb-4 pb-2">Login Form</h2>
+                                <h2 class="hero-title text-center mb-4 pb-2">Login</h2>
 
                                 <div class="form-floating mb-4 p-0">
                                     {{ form.username(class="form-control", placeholder="Username") }}
