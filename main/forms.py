@@ -36,5 +36,5 @@ class CategoryForm(FlaskForm):
     submit = SubmitField('Next')
 
 class LinkForm(FlaskForm):
-    link = StringField('Link')
+    url = StringField('Link')
     submit = SubmitField('Enter')

@@ -15,7 +15,7 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
         user = db.session.scalar(
@@ -80,16 +80,41 @@ def create_category():
 @app.route('/<username>/home')
 @login_required
 def home(username):
-    form = LinkForm()
-    form_category = CategoryForm()
-    category_id = form_category.id.data
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-    if form.validate_on_submit():
-        url = form.link.data
-        link = Link(link=url, category=category_id)
-        db.session.add(link)
-        db.session.commit()
-        flash('The link has been added')
-        
-    return render_template('home.html')
+    user = db.session.scalar(sa.select(User).where(User.username == username))
+    if user is None:
+        flash('User Not Found')
+        return redirect(url_for('index'))
+    categories = db.session.scalars(sa.select(Category).where(Category.user_id == user.id)).all()    # form = LinkForm()
+    # form_category = CategoryForm()
+    # category_id = form_category.id.data
+    # if not current_user.is_authenticated:
+    #     return redirect(url_for('login'))
+    # if form.validate_on_submit():
+    #     url = form.link.data
+    #     link = Link(link=url, category=category_id)
+    #     db.session.add(link)
+    #     db.session.commit()
+    #     flash('The link has been added')        
+    return render_template('home.html', title=f'{username} Home', categories=categories, username=username)
+
+@app.route('/category/<int:category_id>')
+def view_category(category_id):
+    category = db.session.get(Category, category_id)
+    if category is None:
+        flash('Category not found')
+        return redirect(url_for('home', username=current_user.username))
+    return render_template('category.html', title=category.category_name, category=category)
+
+
+@app.route('/category/<int:category_id>/add_link', methods=['POST'])
+def add_link(category_id):
+    category = db.session.get(Category, category_id)
+    if category is None:
+        flash('Category not found.')
+        return redirect(url_for('home', username=current_user.username))
+    url = request.form['url']
+    link = Link(link=url, category=category)
+    db.session.add(link)
+    db.session.commit()
+    flash('Link added successfully')
+    return redirect(url_for('view_category', category_id=category.id))

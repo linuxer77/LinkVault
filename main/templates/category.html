@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+</head>
+<body>
+    <h1>Links for {{ category.category_name }}</h1>
+    <ul>
+        {% for link in category.html %}
+        <li>{{ link.url }}</li>
+        {% endfor %}
+    </ul>
+    <form action="{{ url_for('add_link', category_id=category.id) }}" method="post">
+        <input type="url" name="url" placeholder="Link URL" required>
+        <input type="text" name="description" placeholder="Description">
+        <button type="submit">Add Link</button>
+    </form>
+</body>
+</html>
