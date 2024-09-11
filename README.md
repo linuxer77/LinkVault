@@ -16,11 +16,6 @@ LinkVault is a web application built using Flask that allows users to store and 
 Make sure you have the following installed:
 
 - Python 3.x
-- Flask
-- Flask-SQLAlchemy
-- Flask-Login
-- Werkzeug
-
 ### Installation
 
 1. Clone the repository:
