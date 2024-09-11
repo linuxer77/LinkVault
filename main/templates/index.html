@@ -32,7 +32,7 @@ Bootstrap 5 Form Pack Template
 -->
     </head>
     
-    <body>
+    <body style="background-color: rgb(46, 46, 46);">
 
         <main>
 
@@ -72,18 +72,18 @@ Bootstrap 5 Form Pack Template
                 <div class="offcanvas-body d-flex flex-column justify-content-center align-items-center">
                     <nav>
                         <ul>
-  
+                            {% if current_user.is_anonymous %}
                             <li>
                                 <a class="active" href="{{ url_for('login') }}">Login</a>
                             </li>
-
                             <li>
                                 <a href="{{ url_for('register') }}">Create an account</a>
                             </li>
-
+                            {% else %}
                             <li>
                                 <a href="{{ url_for('logout') }}">Logout</a>
                             </li>
+                            {% endif %}
                     </nav>
                 </div>
             </div>
@@ -175,14 +175,14 @@ Bootstrap 5 Form Pack Template
                           
                     </div>
                 </div>
-
+<!-- 
                 <div class="video-wrap">
                     <video autoplay="" loop="" muted="" class="custom-video" poster="">
                         <source src="{{ url_for('static', filename='videos/video.mp4') }}" type="video/mp4">
 
                         Your browser does not support the video tag.
                     </video>
-                </div>
+                </div> -->
             </section>
         </main>
 
